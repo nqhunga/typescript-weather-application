@@ -7,7 +7,7 @@ interface IState {
     lat: string,
     lng: string
   },
-  currentPositionData: any,
+  currentPositionData: Object,
   render: boolean
 }
 
