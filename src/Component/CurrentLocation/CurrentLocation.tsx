@@ -4,7 +4,7 @@ interface IPros {
   data: any
 }
 
-export const CurrentLocation: React.StatelessComponent<IPros> = (props) => {
+export const CurrentLocation = (props: IPros) => {
   const CurrentData = props.data
   return (
     <div>
