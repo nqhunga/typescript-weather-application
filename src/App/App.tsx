@@ -2,11 +2,16 @@ import * as React from 'react';
 
 import { CurrentPosition } from '../GetApi/CurrentData';
 import { ForecastData } from '../GetApi/ForecastData';
+import { GoogleId } from '../GetApi/GoogleIdData';
 import { CurrentLocation } from '../Component/CurrentLocation/CurrentLocation';
 import { Chart } from '../Component/Chart/Chart';
 import  { ForecastReport } from '../Component/ForecastReport/ForecastReport';
+import { GoogleMap } from '../Component/GoogleMap/GoogleMap';
+import { injectGlobal } from "../Theme/style";
+import ReactFontAwesome from '../Component/FontAwesome';
+import styled from '../Theme/style';
 import InputField from '../Container/InputField/InputField';
-
+import '../assets/font/Bitter-Bold.ttf';
 interface IState {
   currentPosition: {
     lat: string,
@@ -18,13 +23,23 @@ interface IState {
   drawArray: Array<Object>
 }
 
+injectGlobal`
+  * { margin: 0; padding: 0; }
+  
+  @font-face {
+    font-family: 'Header';
+    src: url('../assets/font/Bitter-Bold.ttf');
+  }
+  
+`;
+
 interface FetchData {
   current: Object,
   forecast: Array<Object>,
   location: Object
 }
 
-export class App extends React.Component<{}, IState> {
+class App extends React.Component<{}, IState> {
   constructor(props: {}) {
     super(props);
 
@@ -45,6 +60,7 @@ export class App extends React.Component<{}, IState> {
     navigator.geolocation.getCurrentPosition((position) => {
       const lat = position.coords.latitude.toString();
       const lng = position.coords.longitude.toString();
+      GoogleId(lat, lng).then(data => console.log(data));
       this.setState({
         currentPosition: {
           lat, lng
@@ -85,11 +101,13 @@ export class App extends React.Component<{}, IState> {
 
   render() {
     return (
-      <div>
+      <AppContainer>
+        <ReactFontAwesome />
         {this.state.render ?
           <div>
             <InputField onSubmit={(cityName: string) => this.onSubmit(cityName)} />
             <CurrentLocation data={this.state.currentPositionData} />
+            <GoogleMap data={this.state.currentPosition} />
           </div>
           : ''
         }
@@ -100,7 +118,16 @@ export class App extends React.Component<{}, IState> {
           </div>
           : ''
         }
-      </div>
+      </AppContainer>
     );
   }
 }
+
+const AppContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+
+  font-family: 'Normal';
+`;
+
+export default App;

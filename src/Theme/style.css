@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Header';
+  src: url('../assets/font/Bitter-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Normal';
+  src: url('../assets/font/Bitter-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Highlight';
+  src: url('../assets/font/Bitter-Italic.ttf');
+}

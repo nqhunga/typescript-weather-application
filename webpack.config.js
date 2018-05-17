@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -19,15 +20,31 @@ module.exports = {
         loader: "source-map-loader"
       },
       {
-        test: /\.scss$/,
-        use: ["sass-loader", "css-loader", "style-loader"]
+        test: /\.css$/,
+        use: [ 
+          "style-loader",
+          "css-loader"
+        ]
       },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader"
+        ]
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg)$/,
+        use: ['file-loader'],
+      }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html"
-    })
+    }),
+    new Dotenv()
   ],
   devtool: "source-map",
   resolve: {
