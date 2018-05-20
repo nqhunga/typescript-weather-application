@@ -27,7 +27,7 @@ export const GoogleMap = (props: IProps) => {
   return (
     <div style={{ height: '100%', width: '100%' }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
+        bootstrapURLKeys={{ key: `${process.env.GOOGLE_KEY }`}}
         center={{ lat: Number(props.data.lat), lng: Number(props.data.lng) }}
         zoom={11}
       >
