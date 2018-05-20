@@ -1,24 +1,43 @@
-interface FetchDataValue {
-  current: Object,
-  forecast: {
-    forecastday: Array<Object>
+interface IProps {
+  location: {
+    name: string,
+    region: string,
+    country: string,
+    localtime: string,
   },
-  location: Object
-}
-
-function FormatData(data: any) {
-  const forecast = data.forecast.forecastday;
-  const current = data.current;
-  const location = data.location;
-  return {
-    current,
-    forecast,
-    location
+  current: {
+    condition: {
+      icon: string,
+      text: string,
+    }
+  },
+  forecast: {
+    forecast: Array<{
+      day: {
+        maxtemp_c: string,
+        mintemp_c: string,
+        avgtemp_c: string,
+        avghumidity: string,
+        maxwind_kph: string,
+        hour: Array<{
+          time: string,
+          condition: {
+            icon: string,
+            text: string
+          },
+          temp_c: string
+        }>
+      }
+    }>
   }
 }
 
-export async function ForecastData(cityName: string): Promise<FetchDataValue> {
+export async function ForecastData(cityName: string): Promise<IProps> {
+ try {
   const response = await fetch(`/forecast/${cityName}`);
   const results = await response.json();
-  return FormatData(results);
+  return results as IProps;
+ } catch(err) {
+   console.log(err);
+ }
 }

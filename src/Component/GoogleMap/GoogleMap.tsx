@@ -8,12 +8,15 @@ import {
   library
 } from '@fortawesome/fontawesome-svg-core';
 interface IProps {
-  data: any
+  data: {
+    lat: string,
+    lng: string
+  }
 }
 
 library.add(faMapMarkerAlt);
 
-const Marker = (props:any) => <div><FontAwesomeIcon
+const Marker = (props:any) => <div className="marker"><FontAwesomeIcon
   icon={['fas', 'map-marker-alt']}
   fixedWidth
   size="4x"
@@ -22,7 +25,7 @@ const Marker = (props:any) => <div><FontAwesomeIcon
 export const GoogleMap = (props: IProps) => {
 
   return (
-    <div style={{ height: '300px', width: '500px' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
         center={{ lat: Number(props.data.lat), lng: Number(props.data.lng) }}
