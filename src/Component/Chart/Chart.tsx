@@ -8,8 +8,10 @@ interface IProps {
 export const Chart = (props: IProps) => {
   return (
     <div>
-      <ResponsiveContainer width='100%' height='auto' aspect={4.0 / 3.0}>
+      <ResponsiveContainer width='100%' aspect={4.0 / 3.0}>
         <LineChart
+          min-width={500}
+          min-height={700}
           data={props.data}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >

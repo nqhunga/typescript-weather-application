@@ -28,10 +28,9 @@ export default class DataReport extends React.Component<IProps, IState> {
     this.state = {
       forecast: false
     }
-    this.ChangeReport = this.ChangeReport.bind(this);
   }
 
-  ChangeReport() {
+  ChangeReport = ()  => {
     const changeReport = !this.state.forecast;
 
     this.setState({
@@ -40,31 +39,33 @@ export default class DataReport extends React.Component<IProps, IState> {
   }
 
   render() {
+    const { forecast } = this.state;
+    const { data, drawdata, google, hour } = this.props;
     return (
-      <div className="current-display">
-        <div className="button-wrapper"><Button onClick={this.ChangeReport}>{this.state.forecast ? 'Forecast' : 'General'}</Button></div>
-        <div className="upper-display">
+      <div className="current-display" >
+        <div className="button-wrapper"><Button onClick={this.ChangeReport}>{forecast ? 'Forecast' : 'General'}</Button></div>
+        <div className={forecast ? 'upper-display forecast-fixed' : 'upper-display'}>
 
           {this.state.forecast ?
             <div className="left-content" id="fixed-left">
-              <ForecastReport data={this.props.data} />
+              <ForecastReport data={data} />
             </div>
             :
             <div className="left-content">
-              <CurrentLocation data={this.props.data} />
+              <CurrentLocation data={data} />
             </div>
           }
           {this.state.forecast ?
             <div className="right-content" id="fixed-right">
-              <Chart data={this.props.drawdata} />
+              <Chart data={drawdata} />
             </div>
             :
             <div className="right-content">
-              <GoogleMap data={this.props.google} />
+              <GoogleMap data={google} />
             </div>
           }
         </div>
-        {this.state.forecast ? '' : <HourReport data={this.props.hour[0]} />}
+        {this.state.forecast ? '' : <HourReport data={hour[0]} />}
       </div>
     );
   }

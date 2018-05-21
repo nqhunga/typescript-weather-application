@@ -19,8 +19,9 @@ import * as moment from 'moment';
 interface IState {
   currentPosition: {
     lat: string,
-    lng: string
+    lng: string,
   },
+  errorMessage: string,
   currentPositionData: {
     location: {
       name: string,
@@ -69,9 +70,10 @@ class App extends React.Component<{}, IState> {
 
     this.state = {
       currentPosition: {
-        lat: '',
-        lng: ''
+        lat: null,
+        lng: null,
       },
+      errorMessage: null,
       currentPositionData: null,
       loading: false,
       weather: null,
@@ -116,15 +118,29 @@ class App extends React.Component<{}, IState> {
       this.setState({
         currentPosition: { lat, lng },
       }, this.getCurrentPositionInfo);
+    }, err => {
+      const error: { message: string } = { message: null };
+      switch (err.code) {
+        case 1:
+          error.message = 'You denied to share you location, please activate the Sharing location feature in your device and browser to have weather report at your place!'
+          break;
+        case 2:
+          error.message = 'Unfortunately, the sharing position feature is not available at your device or browser. However you still can search weather report by search bar!'
+        case 3:
+          error.message = 'The sharing location feature took too long for response. Please reload the page or using search bar to get weather report!'
+        default:
+          error.message = 'There is something wrong with sharing location feature. Please reload the page or using search bar to get weather report!'
+      }
+      this.setState({ loading: false, errorMessage: error.message })
+      console.log(err.code);
     });
-
   }
   // Submit Place Name
-  onSubmit = async (cityName:string) => {
+  onSubmit = async (cityName: string) => {
     this.setState({ loading: true });
     try {
       const data = await PlaceSuggest(cityName);
-      if (data.length !== 0) {this.getForecastData(cityName)}
+      if (data.length !== 0) { this.getForecastData(cityName) }
       else this.setState({ loading: false });
     } catch (err) {
       console.log(err);
@@ -144,7 +160,7 @@ class App extends React.Component<{}, IState> {
       })
     } catch (err) {
       console.log(err);
-      this.setState({ loading: false },() => console.log(err));
+      this.setState({ loading: false }, () => console.log(err));
     }
   }
   // Get Data For Chart
@@ -179,7 +195,7 @@ class App extends React.Component<{}, IState> {
   }
 
   render() {
-    const { currentPosition, currentPositionData, loading, weather, searchLocation, drawArray, hourForecastData, hourData, trueName } = this.state;
+    const { currentPosition, currentPositionData, loading, weather, searchLocation, drawArray, hourForecastData, hourData, trueName, errorMessage } = this.state;
     if (loading) {
       return <div className="app-container"><ReactFontAwesome /></div>;
     }
@@ -190,11 +206,11 @@ class App extends React.Component<{}, IState> {
           <div className="content-container">
             {weather ?
               <div className="forecast-wrapper">
-                <DataReport data={weather} google={searchLocation} drawdata={drawArray} hour={hourForecastData}/>
+                <DataReport data={weather} google={searchLocation} drawdata={drawArray} hour={hourForecastData} />
               </div>
               :
               <div className="forecast-wrapper">
-                {currentPositionData ?
+                {(currentPosition.lat && currentPosition.lng) ?
                   <div className="current-display">
                     <div className="upper-display">
                       <div className="left-content">
@@ -207,7 +223,12 @@ class App extends React.Component<{}, IState> {
                     <HourReport data={hourData} />
                   </div>
                   :
-                  <div className="current-display">Loading..</div>
+                  <div className="current-display">
+                    <div className="sharing-location-message">
+                      <h3>The Application can not get your Geographic Coordinator!</h3>
+                      <p>{errorMessage}</p>
+                    </div>
+                  </div>
                 }
               </div>
             }
