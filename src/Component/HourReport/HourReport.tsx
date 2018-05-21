@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import styled from '../../Theme/style';
+import {IHour} from '../../Types/Types';
 interface IProps {
   data: Array<Object>
 }

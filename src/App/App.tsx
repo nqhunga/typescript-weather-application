@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { ICoordinate, IWeather, IHour } from '../Types/Types';
 import { CurrentPosition } from '../GetApi/CurrentData';
 import { ForecastData } from '../GetApi/ForecastData';
 import { GoogleId } from '../GetApi/GoogleIdData';
@@ -17,43 +18,13 @@ import DataReport from '../Container/DataReport/DataReport';
 import * as moment from 'moment';
 
 interface IState {
-  currentPosition: {
-    lat: string,
-    lng: string,
-  },
+  currentPosition: ICoordinate,
   errorMessage: string,
-  currentPositionData: {
-    location: {
-      name: string,
-      region: string,
-      country: string,
-      localtime: string,
-    },
-    current: {
-      condition: {
-        icon: string,
-        text: string,
-      }
-    },
-    forecast: {
-      forecastday: Array<{
-        day: {
-          maxtemp_c: string,
-          mintemp_c: string,
-          avgtemp_c: string,
-          avghumidity: string,
-          maxwind_kph: string
-        }
-      }>
-    }
-  },
+  currentPositionData: IWeather,
   loading: boolean,
-  weather: Object,
+  weather: IWeather,
   drawArray: Array<Object>,
-  searchLocation: {
-    lat: string,
-    lng: string
-  },
+  searchLocation: ICoordinate,
   hourData: Array<Object>,
   hourForecastData: Array<Object>,
   trueName: string
@@ -118,23 +89,26 @@ class App extends React.Component<{}, IState> {
       this.setState({
         currentPosition: { lat, lng },
       }, this.getCurrentPositionInfo);
-    }, err => {
-      const error: { message: string } = { message: null };
-      switch (err.code) {
-        case 1:
-          error.message = 'You denied to share you location, please activate the Sharing location feature in your device and browser to have weather report at your place!'
-          break;
-        case 2:
-          error.message = 'Unfortunately, the sharing position feature is not available at your device or browser. However you still can search weather report by search bar!'
-        case 3:
-          error.message = 'The sharing location feature took too long for response. Please reload the page or using search bar to get weather report!'
-        default:
-          error.message = 'There is something wrong with sharing location feature. Please reload the page or using search bar to get weather report!'
-      }
-      this.setState({ loading: false, errorMessage: error.message })
-      console.log(err.code);
-    });
+    }, err => this.handleCoordinateError(err));
   }
+
+  // update State when get Geo Coordinator error
+  handleCoordinateError = (err: { code: number }) => {
+    const error: { message: string } = { message: null };
+    switch (err.code) {
+      case 1:
+        error.message = 'You denied to share you location, please activate the Sharing location feature in your device and browser to have weather report at your place!'
+        break;
+      case 2:
+        error.message = 'Unfortunately, the sharing position feature is not available at your device or browser. However you still can search weather report by search bar!'
+      case 3:
+        error.message = 'The sharing location feature took too long for response. Please reload the page or using search bar to get weather report!'
+      default:
+        error.message = 'There is something wrong with sharing location feature. Please reload the page or using search bar to get weather report!'
+    }
+    this.setState({ errorMessage: error.message, loading: false });
+  }
+
   // Submit Place Name
   onSubmit = async (cityName: string) => {
     this.setState({ loading: true });

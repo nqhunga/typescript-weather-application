@@ -2,32 +2,9 @@ import * as React from 'react';
 import styled from '../../Theme/style';
 import * as moment from 'moment';
 import { HourReport } from '../HourReport/HourReport';
+import { IWeather } from '../../Types/Types';
 interface IPros {
-  data: {
-    location: {
-      name: string,
-      region: string,
-      country: string,
-      localtime: string,
-    },
-    current: {
-      condition: {
-        icon: string,
-        text: string,
-      }
-    },
-    forecast: {
-      forecastday: Array<{
-        day: {
-          maxtemp_c: string,
-          mintemp_c: string,
-          avgtemp_c: string,
-          avghumidity: string,
-          maxwind_kph: string
-        }
-      }>
-    }
-  },
+  data: IWeather,
 }
 
 export const CurrentLocation = (props: IPros) => {

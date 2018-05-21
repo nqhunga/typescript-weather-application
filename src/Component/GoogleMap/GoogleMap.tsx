@@ -1,5 +1,6 @@
 import * as React from 'react';
 import GoogleMapReact from 'google-map-react';
+import {ICoordinate} from '../../Types/Types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt
@@ -8,10 +9,7 @@ import {
   library
 } from '@fortawesome/fontawesome-svg-core';
 interface IProps {
-  data: {
-    lat: string,
-    lng: string
-  }
+  data: ICoordinate
 }
 
 library.add(faMapMarkerAlt);

@@ -6,17 +6,15 @@ import { ForecastReport } from '../../Component/ForecastReport/ForecastReport';
 import { Chart } from '../../Component/Chart/Chart';
 import { Button } from 'reactstrap';
 import { HourReport } from '../../Component/HourReport/HourReport';
+import { ICoordinate, IWeather, IHour } from '../../Types/Types';
 
 interface IState {
   forecast: boolean
 }
 
 interface IProps {
-  data: any,
-  google: {
-    lat: string,
-    lng: string
-  },
+  data: IWeather,
+  google: ICoordinate,
   drawdata: any,
   hour: any,
 }

@@ -1,42 +1,10 @@
-interface IProps {
-  location: {
-    name: string,
-    region: string,
-    country: string,
-    localtime: string,
-  },
-  current: {
-    condition: {
-      icon: string,
-      text: string,
-    }
-  },
-  forecast: {
-    forecast: Array<{
-      day: {
-        maxtemp_c: string,
-        mintemp_c: string,
-        avgtemp_c: string,
-        avghumidity: string,
-        maxwind_kph: string,
-        hour: Array<{
-          time: string,
-          condition: {
-            icon: string,
-            text: string
-          },
-          temp_c: string
-        }>
-      }
-    }>
-  }
-}
+import { IWeather } from '../Types/Types';
 
-export async function ForecastData(cityName: string): Promise<IProps> {
+export async function ForecastData(cityName: string): Promise<IWeather> {
  try {
   const response = await fetch(`/forecast/${cityName}`);
   const results = await response.json();
-  return results as IProps;
+  return results as IWeather;
  } catch(err) {
    console.log(err);
  }

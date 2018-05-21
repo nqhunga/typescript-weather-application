@@ -2,20 +2,9 @@ import * as React from 'react';
 import { Table } from 'reactstrap';
 import * as moment from 'moment';
 import styled from '../../Theme/style';
-
+import {IWeather} from '../../Types/Types';
 interface IProps {
-  data: {
-    forecast: {
-      forecastday: Array<{
-        date: string,
-        day: {
-          avgtemp_c: string,
-          maxtemp_c: string,
-          mintemp_c: string
-        }
-      }>
-    }
-  }
+  data: IWeather
 }
 
 export const ForecastReport = (props: IProps) => {
@@ -31,14 +20,7 @@ export const ForecastReport = (props: IProps) => {
         </tr>
       </thead>
       <tbody>
-      { ForecastData.map((day: {
-        date: string,
-        day: {
-          avgtemp_c: string,
-          maxtemp_c: string,
-          mintemp_c: string
-        }
-      }) => {
+      { ForecastData.map((day: any) => {
         return (
           <tr key={day.date}>
             <th>{moment(day.date).format('dddd')}</th>
