@@ -13,7 +13,7 @@ interface IState {
 }
 
 interface IProps {
-  data: IWeather,
+  weather: IWeather,
   google: ICoordinate,
   drawdata: any,
   hour: any,
@@ -38,7 +38,7 @@ export default class DataReport extends React.Component<IProps, IState> {
 
   render() {
     const { forecast } = this.state;
-    const { data, drawdata, google, hour } = this.props;
+    const { weather, drawdata, google, hour } = this.props;
     return (
       <div className="current-display" >
         <div className="button-wrapper"><Button onClick={this.ChangeReport}>{forecast ? 'Forecast' : 'General'}</Button></div>
@@ -46,11 +46,11 @@ export default class DataReport extends React.Component<IProps, IState> {
 
           {this.state.forecast ?
             <div className="left-content" id="fixed-left">
-              <ForecastReport data={data} />
+              <ForecastReport data={weather} />
             </div>
             :
             <div className="left-content">
-              <CurrentLocation data={data} />
+              <CurrentLocation weather={weather} />
             </div>
           }
           {this.state.forecast ?

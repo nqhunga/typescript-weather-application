@@ -27,7 +27,7 @@ export const GoogleMap = (props: IProps) => {
       <GoogleMapReact
         bootstrapURLKeys={{ key: "AIzaSyD7iFr-OKYYm_ehoR7sfOukE4eIRXNIGlM"}}
         center={{ lat: Number(props.data.lat), lng: Number(props.data.lng) }}
-        zoom={11}
+        zoom={12}
       >
       <Marker 
         lat={Number(props.data.lat)}

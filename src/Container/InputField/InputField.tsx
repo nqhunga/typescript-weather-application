@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from '../../Theme/style';
 import { SuggestItem } from './SuggestItem';
 import { PlaceSuggest } from '../../GetApi/CheckData';
+import { ICoordinate } from '../../Types/Types';
 interface IProps {
   onSubmit: (cityName: string) => void
 }
@@ -12,10 +13,6 @@ interface IState {
     id: number,
     name: string
   }>,
-  location: {
-    lat: number,
-    lng: number
-  }
 }
 
 
@@ -27,10 +24,6 @@ export default class InputField extends React.Component<IProps, IState> {
     this.state = {
       cityName: '',
       cityList: null,
-      location: {
-        lat: null,
-        lng: null
-      }
     }
   }
 
@@ -56,15 +49,12 @@ export default class InputField extends React.Component<IProps, IState> {
 
   onSubmit = (e: any) => {
     this.props.onSubmit(this.state.cityName);
+    this.setState({ cityList: null })
   }
 
   handleSuggest = (value:any) => {
     this.setState({
       cityName: value.name,
-      location: {
-        lat: value.lat,
-        lng: value.lon
-      },
       cityList: null
     })
   }
@@ -78,13 +68,12 @@ export default class InputField extends React.Component<IProps, IState> {
           <button onClick={this.onSubmit}>Submit</button>
         </div>
         <div className="suggest-wrapper">
-          {cityList ?
+          {cityList &&
             <ul className="suggest">
               {
                 cityList.map(value => <SuggestItem key={value.id} data={value} onClickSuggest={this.handleSuggest} />)
               }
             </ul>
-            : null
           }
         </div>
       </div>

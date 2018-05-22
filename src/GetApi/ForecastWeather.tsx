@@ -1,6 +1,6 @@
 import { IWeather } from '../Types/Types';
 
-export async function ForecastData(cityName: string): Promise<IWeather> {
+export async function ForecastWeather(cityName: string): Promise<IWeather> {
  try {
   const response = await fetch(`/forecast/${cityName}`);
   const results = await response.json();

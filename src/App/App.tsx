@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { ICoordinate, IWeather, IHour } from '../Types/Types';
-import { CurrentPosition } from '../GetApi/CurrentData';
-import { ForecastData } from '../GetApi/ForecastData';
+import { UserPositionWeather } from '../GetApi/UserPositionWeather';
+import { ForecastWeather } from '../GetApi/ForecastWeather';
 import { GoogleId } from '../GetApi/GoogleIdData';
 import { PlaceSuggest } from '../GetApi/CheckData';
 import { CurrentLocation } from '../Component/CurrentLocation/CurrentLocation';
@@ -20,20 +20,14 @@ import * as moment from 'moment';
 interface IState {
   currentPosition: ICoordinate,
   errorMessage: string,
-  currentPositionData: IWeather,
+  userPositionWeather: IWeather,
   loading: boolean,
-  weather: IWeather,
+  forecastWeather: IWeather,
   drawArray: Array<Object>,
-  searchLocation: ICoordinate,
-  hourData: Array<Object>,
+  hourWeather: Array<Object>,
   hourForecastData: Array<Object>,
   trueName: string
 }
-
-injectGlobal`
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Normal';}
-  
-`;
 
 class App extends React.Component<{}, IState> {
   constructor(props: {}) {
@@ -45,15 +39,11 @@ class App extends React.Component<{}, IState> {
         lng: null,
       },
       errorMessage: null,
-      currentPositionData: null,
+      userPositionWeather: null,
       loading: false,
-      weather: null,
+      forecastWeather: null,
       drawArray: [],
-      searchLocation: {
-        lat: '',
-        lng: ''
-      },
-      hourData: null,
+      hourWeather: null,
       hourForecastData: [],
       trueName: null
     }
@@ -68,12 +58,12 @@ class App extends React.Component<{}, IState> {
   getCurrentPositionInfo = async () => {
     const { currentPosition: { lat, lng } } = this.state;
     try {
-      const data = await CurrentPosition(lat, lng) as any;
-      const hourData = data.forecast.forecastday[0].hour;
+      const data = await UserPositionWeather(lat, lng) as any;
+      const hourWeather = data.forecast.forecastday[0].hour;
       this.setState({
-        hourData,
+        hourWeather,
         loading: false,
-        currentPositionData: data,
+        userPositionWeather: data,
       });
     } catch (err) {
       this.setState({ loading: false }, () => console.log(err));
@@ -110,27 +100,22 @@ class App extends React.Component<{}, IState> {
   }
 
   // Submit Place Name
-  onSubmit = async (cityName: string) => {
-    this.setState({ loading: true });
-    try {
-      const data = await PlaceSuggest(cityName);
-      if (data.length !== 0) { this.getForecastData(cityName) }
-      else this.setState({ loading: false });
-    } catch (err) {
-      console.log(err);
-    }
+  onSubmit = (cityName: string) => {
+    this.setState({ loading: true }, () => {
+      this.getForecastData(cityName);
+    });
   }
 
   // Update State after Search Place 
   getForecastData = async (cityName: string) => {
     try {
-      const data = await ForecastData(cityName);
+      const data = await ForecastWeather(cityName);
       this.setState({
-        weather: data,
+        forecastWeather: data,
         loading: false,
         drawArray: this.getDrawData(data),
         hourForecastData: this.getHourForecastData(data),
-        searchLocation: this.getSearchingLocation(data),
+        currentPosition: this.getSearchingLocation(data),
       })
     } catch (err) {
       console.log(err);
@@ -169,7 +154,7 @@ class App extends React.Component<{}, IState> {
   }
 
   render() {
-    const { currentPosition, currentPositionData, loading, weather, searchLocation, drawArray, hourForecastData, hourData, trueName, errorMessage } = this.state;
+    const { currentPosition, userPositionWeather, loading, forecastWeather, drawArray, hourForecastData, hourWeather, trueName, errorMessage } = this.state;
     if (loading) {
       return <div className="app-container"><ReactFontAwesome /></div>;
     }
@@ -178,9 +163,9 @@ class App extends React.Component<{}, IState> {
         <div className="inner-container">
           <InputField onSubmit={this.onSubmit} />
           <div className="content-container">
-            {weather ?
+            {forecastWeather ?
               <div className="forecast-wrapper">
-                <DataReport data={weather} google={searchLocation} drawdata={drawArray} hour={hourForecastData} />
+                <DataReport weather={forecastWeather} google={currentPosition} drawdata={drawArray} hour={hourForecastData} />
               </div>
               :
               <div className="forecast-wrapper">
@@ -188,13 +173,13 @@ class App extends React.Component<{}, IState> {
                   <div className="current-display">
                     <div className="upper-display">
                       <div className="left-content">
-                        <CurrentLocation data={currentPositionData} />
+                        <CurrentLocation weather={userPositionWeather} />
                       </div>
                       <div className="right-content">
                         <GoogleMap data={currentPosition} />
                       </div>
                     </div>
-                    <HourReport data={hourData} />
+                    <HourReport data={hourWeather} />
                   </div>
                   :
                   <div className="current-display">
